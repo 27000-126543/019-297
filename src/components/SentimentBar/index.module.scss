@@ -1,0 +1,80 @@
+@use '@/styles/variables.scss' as *;
+
+.container {
+  width: 100%;
+}
+
+.bar {
+  width: 100%;
+  background: $color-bg-page;
+  border-radius: $radius-round;
+  overflow: hidden;
+  display: flex;
+
+  &.small {
+    height: 12rpx;
+  }
+
+  &.medium {
+    height: 16rpx;
+  }
+
+  &.large {
+    height: 24rpx;
+  }
+}
+
+.segment {
+  height: 100%;
+  transition: width $transition-base;
+
+  &.positive {
+    background: $color-success;
+  }
+
+  &.neutral {
+    background: $color-warning;
+  }
+
+  &.negative {
+    background: $color-error;
+  }
+}
+
+.labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: $spacing-sm;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.labelItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: $radius-round;
+
+  &.dotPositive {
+    background: $color-success;
+  }
+
+  &.dotNeutral {
+    background: $color-warning;
+  }
+
+  &.dotNegative {
+    background: $color-error;
+  }
+}
+
+.labelText {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+  white-space: nowrap;
+}

@@ -1,0 +1,80 @@
+@use '@/styles/variables.scss' as *;
+
+.card {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
+  &.highlight {
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  }
+
+  &.clickable {
+    &:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+  }
+}
+
+.title {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-sm;
+  display: block;
+
+  .highlight & {
+    color: rgba(255, 255, 255, 0.85);
+  }
+}
+
+.valueRow {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-xs;
+}
+
+.value {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  line-height: 1.2;
+
+  .highlight & {
+    color: $color-text-white;
+  }
+}
+
+.valueHighlight {
+  color: $color-primary;
+}
+
+.trend {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+
+  &.trendUp {
+    color: $color-success;
+  }
+
+  &.trendDown {
+    color: $color-error;
+  }
+
+  &.trendNone {
+    color: $color-text-tertiary;
+  }
+}
+
+.subtitle {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  display: block;
+
+  .highlight & {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}

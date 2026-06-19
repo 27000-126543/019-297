@@ -1,0 +1,58 @@
+@use '@/styles/variables.scss' as *;
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.light {
+  border-radius: $radius-round;
+
+  &.small {
+    width: 16rpx;
+    height: 16rpx;
+  }
+
+  &.medium {
+    width: 24rpx;
+    height: 24rpx;
+  }
+
+  &.large {
+    width: 32rpx;
+    height: 32rpx;
+  }
+
+  &.green {
+    background: $color-status-green;
+    box-shadow: 0 0 8rpx rgba(0, 180, 42, 0.4);
+  }
+
+  &.yellow {
+    background: $color-status-yellow;
+    box-shadow: 0 0 8rpx rgba(255, 125, 0, 0.4);
+  }
+
+  &.red {
+    background: $color-status-red;
+    box-shadow: 0 0 8rpx rgba(245, 63, 63, 0.4);
+  }
+}
+
+.label {
+  color: $color-text-secondary;
+
+  &.labelSmall {
+    font-size: $font-size-xs;
+  }
+
+  &.labelMedium {
+    font-size: $font-size-sm;
+  }
+
+  &.labelLarge {
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+  }
+}

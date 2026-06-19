@@ -1,0 +1,61 @@
+@use '@/styles/variables.scss' as *;
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-xs;
+  white-space: nowrap;
+
+  &.small {
+    padding: 4rpx 16rpx;
+  }
+
+  &.medium {
+    padding: 8rpx 20rpx;
+  }
+
+  &.positive {
+    background: $color-success-light;
+
+    .tagText {
+      color: $color-success;
+    }
+  }
+
+  &.neutral {
+    background: $color-warning-light;
+
+    .tagText {
+      color: $color-warning;
+    }
+  }
+
+  &.negative {
+    background: $color-error-light;
+
+    .tagText {
+      color: $color-error;
+    }
+  }
+
+  &.clickable {
+    &:active {
+      opacity: 0.8;
+      transform: scale(0.96);
+    }
+  }
+}
+
+.tagText {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+}
+
+.small .tagText {
+  font-size: $font-size-xs;
+}
+
+.medium .tagText {
+  font-size: $font-size-sm;
+}
