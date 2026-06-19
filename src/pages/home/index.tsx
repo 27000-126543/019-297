@@ -1,17 +1,17 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, Input, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
 import classnames from 'classnames';
 import { useShop } from '@/store/shopStore';
-import { industryOptions, generateMentionData } from '@/data/mockData';
+import { industryOptions, generateMentionData, getIndustryLabel } from '@/data/mockData';
 import StatCard from '@/components/StatCard';
 import SentimentBar from '@/components/SentimentBar';
 import PlatformList from '@/components/PlatformList';
-import type { IndustryType, MentionData } from '@/types';
+import type { IndustryType, MentionData, HistoryRecord } from '@/types';
 
 const HomePage: React.FC = () => {
-  const { shopInfo, setShopInfo } = useShop();
+  const { shopInfo, setShopInfo, history, selectHistory, clearHistory } = useShop();
 
   const [industry, setIndustry] = useState<IndustryType>('restaurant');
   const [shopName, setShopName] = useState('');
@@ -20,9 +20,15 @@ const HomePage: React.FC = () => {
   const [activeShopIndex, setActiveShopIndex] = useState(0);
   const [showResults, setShowResults] = useState(false);
 
+  useEffect(() => {
+    if (shopInfo) {
+      setShowResults(true);
+    }
+  }, [shopInfo]);
+
   const mentionData: MentionData[] = useMemo(() => {
     if (!showResults || !shopInfo) return [];
-    return generateMentionData(shopInfo.name, true, shopInfo.competitors);
+    return generateMentionData(shopInfo.name, true, shopInfo.competitors, shopInfo.industry);
   }, [showResults, shopInfo]);
 
   const currentShopData = mentionData[activeShopIndex];
@@ -46,6 +52,24 @@ const HomePage: React.FC = () => {
     console.log('[HomePage] 店铺信息已设置', { shopName, industry, competitors: [competitor1, competitor2] });
   };
 
+  const handleSelectHistory = (record: HistoryRecord) => {
+    selectHistory(record);
+    setShowResults(true);
+    console.log('[HomePage] 选择历史记录', record.shopInfo.name);
+  };
+
+  const handleClearHistory = () => {
+    Taro.showModal({
+      title: '确认清空',
+      content: '确定要清空所有历史记录吗？',
+      success: (res) => {
+        if (res.confirm) {
+          clearHistory();
+        }
+      }
+    });
+  };
+
   const handleEdit = () => {
     setShowResults(false);
     if (shopInfo) {
@@ -61,12 +85,60 @@ const HomePage: React.FC = () => {
     return `${now.getMonth() + 1}月${now.getDate()}日`;
   };
 
+  const formatTime = (timestamp: number) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diff = now.getTime() - timestamp;
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+
+    if (hours < 1) return '刚刚';
+    if (hours < 24) return `${hours}小时前`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}天前`;
+    return `${date.getMonth() + 1}/${date.getDate()}`;
+  };
+
   if (!showResults) {
     return (
       <ScrollView className={styles.page} scrollY>
         <View className={styles.setupSection}>
           <Text className={styles.greeting}>今天有没有被提到？</Text>
           <Text className={styles.subtitle}>输入店铺信息，一键查看全网口碑</Text>
+
+          {history.length > 0 && (
+            <View className={styles.historySection}>
+              <View className={styles.historyHeader}>
+                <Text className={styles.historyTitle}>最近查看</Text>
+                <View className={styles.clearHistoryBtn} onClick={handleClearHistory}>
+                  <Text className={styles.clearHistoryText}>清空</Text>
+                </View>
+              </View>
+              <View className={styles.historyList}>
+                {history.map(record => (
+                  <View
+                    key={record.id}
+                    className={styles.historyItem}
+                    onClick={() => handleSelectHistory(record)}
+                  >
+                    <View className={styles.historyIcon}>
+                      <Text>🏪</Text>
+                    </View>
+                    <View className={styles.historyContent}>
+                      <Text className={styles.historyName}>{record.shopInfo.name}</Text>
+                      <Text className={styles.historyMeta}>
+                        {getIndustryLabel(record.shopInfo.industry)} · 竞品：{record.shopInfo.competitors.join('、')}
+                      </Text>
+                    </View>
+                    <View className={styles.historyTime}>
+                      <Text className={styles.historyTimeText}>
+                        {formatTime(record.lastUsedAt)}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
 
           <View className={styles.setupCard}>
             <Text className={styles.setupTitle}>设置你的店铺</Text>

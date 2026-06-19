@@ -150,3 +150,44 @@
   font-weight: $font-weight-medium;
   color: $color-text-white;
 }
+
+.viewTodoBtn {
+  margin-top: $spacing-lg;
+  padding: $spacing-md;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: $radius-md;
+  text-align: center;
+  transition: all $transition-base;
+
+  &:active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.98);
+  }
+}
+
+.viewTodoBtnText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-white;
+}
+
+.generateTodoBtn {
+  margin-top: $spacing-lg;
+  padding: $spacing-md;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: $radius-md;
+  text-align: center;
+  transition: all $transition-base;
+  border: 2rpx dashed rgba(255, 255, 255, 0.5);
+
+  &:active {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(0.98);
+  }
+}
+
+.generateTodoBtnText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-white;
+}

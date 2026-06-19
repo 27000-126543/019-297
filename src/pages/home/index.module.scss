@@ -308,3 +308,98 @@
   font-size: $font-size-sm;
   color: $color-primary;
 }
+
+.historySection {
+  margin-bottom: $spacing-lg;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.historyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.historyTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.clearHistoryBtn {
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.clearHistoryText {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.historyItem {
+  display: flex;
+  align-items: center;
+  padding: $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  gap: $spacing-md;
+  transition: all $transition-base;
+
+  &:active {
+    background: $color-bg-hover;
+    transform: scale(0.99);
+  }
+}
+
+.historyIcon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: $radius-md;
+  background: $color-primary-bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 28rpx;
+}
+
+.historyContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.historyName {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  @include text-ellipsis;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.historyMeta {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  @include text-ellipsis;
+  display: block;
+}
+
+.historyTime {
+  flex-shrink: 0;
+}
+
+.historyTimeText {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}

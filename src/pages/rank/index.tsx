@@ -1,21 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
+import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
 import classnames from 'classnames';
-import { rankData } from '@/data/mockData';
+import { useShop } from '@/store/shopStore';
+import { generateRankData, getIndustryLabel } from '@/data/mockData';
 import RankItem from '@/components/RankItem';
 import StatusLight from '@/components/StatusLight';
 import KeywordTag from '@/components/KeywordTag';
 import type { RankItemData } from '@/types';
 
 const RankPage: React.FC = () => {
-  const [selectedRank, setSelectedRank] = useState<number | null>(1);
+  const { shopInfo, isSetup } = useShop();
+  const [selectedRank, setSelectedRank] = useState<number | null>(null);
+
+  const rankData: RankItemData[] = useMemo(() => {
+    if (!shopInfo) return [];
+    return generateRankData(shopInfo);
+  }, [shopInfo]);
 
   const selectedShop = rankData.find(item => item.rank === selectedRank);
 
-  const handleRankClick = (rank: number) => {
+  const handleRankClick = (rank: number, shopName: string) => {
     setSelectedRank(rank);
-    console.log('[RankPage] 选中排名', rank);
+    console.log('[RankPage] 选中排名', rank, shopName);
+  };
+
+  const handleViewDetail = (shopName: string) => {
+    console.log('[RankPage] 跳转到详情页', shopName);
+    Taro.navigateTo({
+      url: `/pages/detail/index?shopName=${encodeURIComponent(shopName)}`
+    });
   };
 
   const getKeywordType = (status: string, index: number): 'positive' | 'neutral' | 'negative' => {
@@ -24,11 +39,31 @@ const RankPage: React.FC = () => {
     return 'neutral';
   };
 
+  const handleGoSetup = () => {
+    Taro.switchTab({ url: '/pages/home/index' });
+  };
+
+  if (!isSetup || !shopInfo) {
+    return (
+      <ScrollView className={styles.page} scrollY>
+        <View className={styles.emptyState}>
+          <Text className={styles.emptyIcon}>📊</Text>
+          <Text className={styles.emptyText}>先去首页设置你的店铺信息吧</Text>
+          <View className={styles.goSetupBtn} onClick={handleGoSetup}>
+            <Text className={styles.goSetupBtnText}>去设置</Text>
+          </View>
+        </View>
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView className={styles.page} scrollY>
       <View className={styles.header}>
         <Text className={styles.title}>同城榜单</Text>
-        <Text className={styles.subtitle}>看看你在同行中的位置</Text>
+        <Text className={styles.subtitle}>
+          {getIndustryLabel(shopInfo.industry)} · 共 {rankData.length} 家同行
+        </Text>
       </View>
 
       <View className={styles.legendSection}>
@@ -55,7 +90,7 @@ const RankPage: React.FC = () => {
           <RankItem
             key={item.rank}
             data={item}
-            onClick={() => handleRankClick(item.rank)}
+            onClick={() => handleRankClick(item.rank, item.shopName)}
           />
         ))}
       </View>
@@ -66,8 +101,13 @@ const RankPage: React.FC = () => {
 
           <View className={styles.detailCard}>
             <View className={styles.detailHeader}>
-              <Text className={styles.detailShopName}>{selectedShop.shopName}</Text>
-              <Text className={styles.detailRank}>第 {selectedShop.rank} 名</Text>
+              <View>
+                <Text className={styles.detailShopName}>{selectedShop.shopName}</Text>
+                <Text className={styles.detailRank}>第 {selectedShop.rank} 名</Text>
+              </View>
+              <View className={styles.detailBtn} onClick={() => handleViewDetail(selectedShop.shopName)}>
+                <Text className={styles.detailBtnText}>查看详细分析 →</Text>
+              </View>
             </View>
 
             <View className={styles.detailStats}>
@@ -80,6 +120,12 @@ const RankPage: React.FC = () => {
                   {selectedShop.hotKeywords.length}
                 </Text>
                 <Text className={styles.detailStatLabel}>热门关键词</Text>
+              </View>
+              <View className={styles.detailStat}>
+                <Text className={styles.detailStatNum}>
+                  {selectedShop.platforms.reduce((sum, p) => sum + p.count, 0)}
+                </Text>
+                <Text className={styles.detailStatLabel}>平台讨论量</Text>
               </View>
             </View>
 
@@ -112,16 +158,38 @@ const RankPage: React.FC = () => {
               </View>
             </View>
 
+            <View className={styles.platformSection}>
+              <Text className={styles.keywordTitle}>主要讨论平台</Text>
+              <View className={styles.platformMiniList}>
+                {selectedShop.platforms.slice(0, 3).map((p, i) => (
+                  <View key={i} className={styles.platformMiniItem}>
+                    <View
+                      className={styles.platformMiniDot}
+                      style={{ backgroundColor: p.color }}
+                    />
+                    <Text className={styles.platformMiniName}>{p.name}</Text>
+                    <Text className={styles.platformMiniCount}>{p.count}次</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+
             <View className={styles.changeDesc}>
               <Text className={styles.changeDescText}>
                 💡 {selectedShop.changeDesc}
+              </Text>
+            </View>
+
+            <View className={styles.viewDetailBtn} onClick={() => handleViewDetail(selectedShop.shopName)}>
+              <Text className={styles.viewDetailBtnText}>
+                查看热词来源和平台分布详情 →
               </Text>
             </View>
           </View>
         </>
       )}
 
-      {!selectedShop && (
+      {!selectedShop && rankData.length > 0 && (
         <View className={styles.emptyState}>
           <Text className={styles.emptyText}>点击上方榜单查看详情</Text>
         </View>

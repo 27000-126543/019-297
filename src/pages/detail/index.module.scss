@@ -1,0 +1,332 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: 80rpx;
+}
+
+.header {
+  padding: $spacing-xl $spacing-lg;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+}
+
+.shopName {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-white;
+  margin-bottom: $spacing-sm;
+}
+
+.shopMeta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.rankBadge {
+  padding: 4rpx 16rpx;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: $radius-xs;
+}
+
+.rankBadgeText {
+  font-size: $font-size-sm;
+  color: $color-text-white;
+  font-weight: $font-weight-medium;
+}
+
+.scoreText {
+  font-size: $font-size-md;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  padding: $spacing-lg $spacing-lg $spacing-md;
+}
+
+.platformCard {
+  margin: 0 $spacing-lg $spacing-lg;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+}
+
+.platformItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md 0;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &:first-child {
+    padding-top: 0;
+  }
+}
+
+.platformLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.platformDot {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: $radius-round;
+}
+
+.platformName {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+}
+
+.platformRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.platformBar {
+  width: 200rpx;
+  height: 12rpx;
+  background: $color-bg-page;
+  border-radius: $radius-round;
+  overflow: hidden;
+}
+
+.platformBarFill {
+  height: 100%;
+  border-radius: $radius-round;
+  transition: width $transition-base;
+}
+
+.platformCount {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  width: 80rpx;
+  text-align: right;
+}
+
+.keywordSection {
+  margin: 0 $spacing-lg $spacing-lg;
+}
+
+.keywordCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+
+  &.positive {
+    border-left: 6rpx solid $color-success;
+  }
+
+  &.neutral {
+    border-left: 6rpx solid $color-warning;
+  }
+
+  &.negative {
+    border-left: 6rpx solid $color-error;
+  }
+}
+
+.keywordHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.keywordTitle {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.keywordText {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.keywordTypeTag {
+  padding: 4rpx 12rpx;
+  border-radius: $radius-xs;
+
+  &.positive {
+    background: $color-success-light;
+
+    .keywordTypeText {
+      color: $color-success;
+    }
+  }
+
+  &.neutral {
+    background: $color-warning-light;
+
+    .keywordTypeText {
+      color: $color-warning;
+    }
+  }
+
+  &.negative {
+    background: $color-error-light;
+
+    .keywordTypeText {
+      color: $color-error;
+    }
+  }
+}
+
+.keywordTypeText {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+}
+
+.keywordCount {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.keywordPlatformList {
+  margin-bottom: $spacing-md;
+}
+
+.kwPlatformItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+}
+
+.kwPlatformLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.trendIcon {
+  font-size: $font-size-sm;
+  width: 24rpx;
+  text-align: center;
+
+  &.up {
+    color: $color-success;
+  }
+
+  &.down {
+    color: $color-error;
+  }
+
+  &.stable {
+    color: $color-text-tertiary;
+  }
+}
+
+.kwPlatformName {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  width: 100rpx;
+}
+
+.kwPlatformBar {
+  flex: 1;
+  height: 8rpx;
+  background: $color-bg-page;
+  border-radius: $radius-round;
+  overflow: hidden;
+  margin: 0 $spacing-sm;
+}
+
+.kwPlatformBarFill {
+  height: 100%;
+  border-radius: $radius-round;
+}
+
+.kwPlatformCount {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  width: 60rpx;
+  text-align: right;
+}
+
+.commentsSection {
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+}
+
+.commentsTitle {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-sm;
+}
+
+.commentItem {
+  padding: $spacing-sm 0;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: $line-height-loose;
+
+  &::before {
+    content: '“';
+    color: $color-text-tertiary;
+    margin-right: 4rpx;
+  }
+
+  &::after {
+    content: '”';
+    color: $color-text-tertiary;
+    margin-left: 4rpx;
+  }
+}
+
+.emptyState {
+  padding: 120rpx 0;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 96rpx;
+  margin-bottom: $spacing-md;
+  display: block;
+}
+
+.emptyText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+}
+
+.goBackBtn {
+  margin-top: $spacing-xl;
+  display: inline-flex;
+  padding: 0 $spacing-xl;
+  height: 80rpx;
+  background: $color-primary;
+  border-radius: $radius-button;
+  align-items: center;
+  justify-content: center;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+.goBackBtnText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-white;
+}

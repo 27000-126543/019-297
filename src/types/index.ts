@@ -11,6 +11,13 @@ export interface ShopInfo {
   competitors: string[];
 }
 
+export interface HistoryRecord {
+  id: string;
+  shopInfo: ShopInfo;
+  lastUsedAt: number;
+  createdAt: number;
+}
+
 export interface PlatformData {
   name: string;
   count: number;
@@ -35,6 +42,20 @@ export interface MentionData {
 
 export type StatusType = 'green' | 'yellow' | 'red';
 
+export interface KeywordPlatformData {
+  platform: string;
+  count: number;
+  trend: 'up' | 'down' | 'stable';
+}
+
+export interface KeywordDetail {
+  keyword: string;
+  type: 'positive' | 'neutral' | 'negative';
+  totalCount: number;
+  platforms: KeywordPlatformData[];
+  sampleComments: string[];
+}
+
 export interface RankItemData {
   rank: number;
   shopName: string;
@@ -44,7 +65,9 @@ export interface RankItemData {
   volumeStatus: StatusType;
   keywordStatus: StatusType;
   hotKeywords: string[];
+  keywordDetails: KeywordDetail[];
   changeDesc: string;
+  platforms: PlatformData[];
 }
 
 export interface AdviceItem {
@@ -58,4 +81,22 @@ export interface AdviceData {
   commentAdvice: string;
   influencerAdvice: string;
   campaignAdvice: string;
+  summary: string;
+  negativeKeywords: string[];
+  competitorAction: string;
+  hotPlatform: string;
+}
+
+export type TodoType = 'comment' | 'influencer' | 'campaign';
+
+export interface TodoItem {
+  id: string;
+  type: TodoType;
+  title: string;
+  description: string;
+  priority: 'high' | 'medium' | 'low';
+  completed: boolean;
+  createdAt: number;
+  completedAt?: number;
+  relatedShop: string;
 }
