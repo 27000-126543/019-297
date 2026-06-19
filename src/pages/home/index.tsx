@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, Input, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
@@ -19,12 +19,6 @@ const HomePage: React.FC = () => {
   const [competitor2, setCompetitor2] = useState('');
   const [activeShopIndex, setActiveShopIndex] = useState(0);
   const [showResults, setShowResults] = useState(false);
-
-  useEffect(() => {
-    if (shopInfo) {
-      setShowResults(true);
-    }
-  }, [shopInfo]);
 
   const mentionData: MentionData[] = useMemo(() => {
     if (!showResults || !shopInfo) return [];
@@ -54,7 +48,12 @@ const HomePage: React.FC = () => {
 
   const handleSelectHistory = (record: HistoryRecord) => {
     selectHistory(record);
+    setIndustry(record.shopInfo.industry);
+    setShopName(record.shopInfo.name);
+    setCompetitor1(record.shopInfo.competitors[0] || '');
+    setCompetitor2(record.shopInfo.competitors[1] || '');
     setShowResults(true);
+    setActiveShopIndex(0);
     console.log('[HomePage] 选择历史记录', record.shopInfo.name);
   };
 

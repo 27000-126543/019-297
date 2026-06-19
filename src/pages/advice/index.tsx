@@ -40,6 +40,7 @@ const AdvicePage: React.FC = () => {
 
     generateTodosFromAdvice(
       shopInfo.name,
+      shopInfo.industry,
       adviceData.negativeKeywords,
       adviceData.competitorAction,
       adviceData.hotPlatform
@@ -57,6 +58,7 @@ const AdvicePage: React.FC = () => {
 
     generateTodosFromAdvice(
       shopInfo.name,
+      shopInfo.industry,
       adviceData.negativeKeywords,
       adviceData.competitorAction,
       adviceData.hotPlatform

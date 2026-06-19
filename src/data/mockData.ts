@@ -284,9 +284,47 @@ export const generateRankData = (shopInfo: ShopInfo): RankItemData[] => {
     .map((item, idx) => ({ ...item, rank: idx + 1 }));
 };
 
+const industryAdviceTemplates: Record<IndustryType, {
+  influencer: string;
+  commentReply: string;
+  campaignExample: string;
+}> = {
+  restaurant: {
+    influencer: '美食达人',
+    commentReply: '下次到店优先安排',
+    campaignExample: '第二份半价'
+  },
+  cafe: {
+    influencer: '生活达人',
+    commentReply: '下次到店送小点心',
+    campaignExample: '买一送一'
+  },
+  retail: {
+    influencer: '探店达人',
+    commentReply: '下次到店享会员折扣',
+    campaignExample: '满减优惠'
+  },
+  beauty: {
+    influencer: '美业达人',
+    commentReply: '下次到店送护理体验',
+    campaignExample: '闺蜜同行5折'
+  },
+  fitness: {
+    influencer: '健身达人',
+    commentReply: '下次到店送私教课一节',
+    campaignExample: '买年卡送月卡'
+  },
+  other: {
+    influencer: '同城达人',
+    commentReply: '下次到店享专属优惠',
+    campaignExample: '新客立减'
+  }
+};
+
 export const generateAdviceData = (shopInfo: ShopInfo, rankData: RankItemData[]): AdviceData => {
   const { name: ownName, industry, competitors } = shopInfo;
   const keywords = industryKeywords[industry];
+  const templates = industryAdviceTemplates[industry] || industryAdviceTemplates.other;
 
   const ownRank = rankData.find(r => r.isOwn);
   const topRank = rankData.find(r => r.rank === 1);
@@ -308,22 +346,23 @@ export const generateAdviceData = (shopInfo: ShopInfo, rankData: RankItemData[])
   const topCompetitorName = competitors[0] || topRank?.shopName || '竞品';
 
   const negativeKeywordStr = negativeKeywords.length > 0
-    ? `"${negativeKeywords[0]}"${negativeKeywords.length > 1 ? `、"${negativeKeywords[1]}"` : ''}`
+    ? '"' + negativeKeywords[0] + '"' + (negativeKeywords.length > 1 ? '、"' + negativeKeywords[1] + '"' : '')
     : '顾客不满意';
 
   const commentAdvice = negativeKeywords.length > 0
-    ? `重点回复${negativeKeywordStr}相关的差评，建议给出下次到店优先安排的补偿方案。已帮你整理了${3 + Math.floor(seededRandom(`${ownName}-commentcnt`) * 3)}条差评待回复。`
-    : `今日${positiveKeywords.length > 0 ? `"${positiveKeywords[0]}"好评较多` : '正面评价不错'}，建议及时回复好评，提升顾客粘性。`;
+    ? '重点回复' + negativeKeywordStr + '相关的差评，建议给出' + templates.commentReply + '的补偿方案。已帮你整理了' + (3 + Math.floor(seededRandom(ownName + '-commentcnt') * 3)) + '条差评待回复。'
+    : '今日' + (positiveKeywords.length > 0 ? '"' + positiveKeywords[0] + '"好评较多' : '正面评价不错') + '，建议及时回复好评，提升顾客粘性。';
 
-  const influencerAdvice = `最近${2 + Math.floor(seededRandom(`${ownName}-influencer`) * 3)}位本地${industry === 'restaurant' ? '美食' : industry === 'cafe' ? '生活' : '同城'}达人在${topPlatform}发布了本店相关内容，互动量不错，建议主动联系合作推出专属套餐。`;
+  const influencerCount = 2 + Math.floor(seededRandom(ownName + '-influencer') * 3);
+  const influencerAdvice = '最近' + influencerCount + '位本地' + templates.influencer + '在' + topPlatform + '发布了本店相关内容，互动量不错，建议主动联系合作推出专属活动。';
 
   const campaignAdvice = topRank && !topRank.isOwn
-    ? `竞品"${topCompetitorName}"因"${competitorAction}"活动声量暴涨，建议你也推出限时优惠活动，可参考"第二份半价"或"新客立减"话术。`
-    : `当前${topPlatform}平台热度最高，建议加大在${topPlatform}的活动投放，可推出"${competitorAction}"吸引更多顾客。`;
+    ? '竞品"' + topCompetitorName + '"因"' + competitorAction + '"活动声量暴涨，建议你也推出限时优惠活动，可参考"' + templates.campaignExample + '"或"' + competitorAction + '"话术。'
+    : '当前' + topPlatform + '平台热度最高，建议加大在' + topPlatform + '的活动投放，可推出"' + competitorAction + '"吸引更多顾客。';
 
   const summary = negativeKeywords.length > 0
-    ? `整体表现中等，差评主要集中在${negativeKeywordStr}问题，建议优先优化服务，同时可参考竞品的${competitorAction}活动提升声量。`
-    : `整体表现不错，${positiveKeywords.length > 0 ? `"${positiveKeywords[0]}"广受好评` : '口碑良好'}，建议保持优势，参考竞品推出活动进一步提升声量。`;
+    ? '整体表现中等，差评主要集中在' + negativeKeywordStr + '问题，建议优先优化服务，同时可参考竞品的' + competitorAction + '活动提升声量。'
+    : '整体表现不错，' + (positiveKeywords.length > 0 ? '"' + positiveKeywords[0] + '"广受好评' : '口碑良好') + '，建议保持优势，参考竞品推出活动进一步提升声量。';
 
   return {
     commentAdvice,

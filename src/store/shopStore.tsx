@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import Taro from '@tarojs/taro';
-import type { ShopInfo, HistoryRecord, TodoItem, TodoType } from '@/types';
+import type { ShopInfo, HistoryRecord, TodoItem, TodoType, IndustryType } from '@/types';
 
 const HISTORY_STORAGE_KEY = 'shop_history_records';
 const TODO_STORAGE_KEY = 'shop_todo_items';
@@ -17,7 +17,7 @@ interface ShopContextType {
   toggleTodo: (id: string) => void;
   deleteTodo: (id: string) => void;
   clearCompletedTodos: () => void;
-  generateTodosFromAdvice: (shopName: string, negativeKeywords: string[], competitorAction: string, hotPlatform: string) => void;
+  generateTodosFromAdvice: (shopName: string, industry: IndustryType, negativeKeywords: string[], competitorAction: string, hotPlatform: string) => void;
   isSetup: boolean;
 }
 
@@ -25,14 +25,41 @@ const ShopContext = createContext<ShopContextType | undefined>(undefined);
 
 const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-const defaultShopInfo: ShopInfo = {
-  name: '我的小店',
-  industry: 'restaurant',
-  competitors: ['城南老火锅', '川味轩']
+const industryLabels: Record<IndustryType, { influencer: string; commentReply: string; campaign: string }> = {
+  restaurant: {
+    influencer: '美食达人',
+    commentReply: '下次到店优先安排',
+    campaign: '第二份半价'
+  },
+  cafe: {
+    influencer: '生活达人',
+    commentReply: '下次到店送小点心',
+    campaign: '买一送一'
+  },
+  retail: {
+    influencer: '探店达人',
+    commentReply: '下次到店享会员折扣',
+    campaign: '满减优惠'
+  },
+  beauty: {
+    influencer: '美业达人',
+    commentReply: '下次到店送护理体验',
+    campaign: '闺蜜同行5折'
+  },
+  fitness: {
+    influencer: '健身达人',
+    commentReply: '下次到店送私教课一节',
+    campaign: '买年卡送月卡'
+  },
+  other: {
+    influencer: '同城达人',
+    commentReply: '下次到店享专属优惠',
+    campaign: '新客立减'
+  }
 };
 
 export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [shopInfo, setShopInfoState] = useState<ShopInfo | null>(defaultShopInfo);
+  const [shopInfo, setShopInfoState] = useState<ShopInfo | null>(null);
   const [history, setHistory] = useState<HistoryRecord[]>([]);
   const [todos, setTodos] = useState<TodoItem[]>([]);
 
@@ -40,7 +67,8 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const savedHistory = Taro.getStorageSync(HISTORY_STORAGE_KEY);
       if (savedHistory) {
-        setHistory(JSON.parse(savedHistory));
+        const parsed = JSON.parse(savedHistory);
+        setHistory(parsed);
       }
       const savedTodos = Taro.getStorageSync(TODO_STORAGE_KEY);
       if (savedTodos) {
@@ -169,10 +197,13 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const generateTodosFromAdvice = useCallback((
     shopName: string,
+    industry: IndustryType,
     negativeKeywords: string[],
     competitorAction: string,
     hotPlatform: string
   ) => {
+    const labels = industryLabels[industry] || industryLabels.other;
+
     const existingCount = todos.filter(
       t => t.relatedShop === shopName && !t.completed
     ).length;
@@ -186,7 +217,7 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       addTodo(
         'comment',
         `回复关于"${negativeKeywords[0]}"的差评`,
-        `重点回复${negativeKeywords.map(k => `"${k}"`).join('、')}相关的差评，建议给出下次到店优先安排的补偿方案。已帮你整理了最新的差评待回复。`,
+        `重点回复${negativeKeywords.map(k => `"${k}"`).join('、')}相关的差评，建议给出${labels.commentReply}的补偿方案。已帮你整理了最新的差评待回复。`,
         'high',
         shopName
       );
@@ -202,8 +233,8 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     addTodo(
       'influencer',
-      `跟进${hotPlatform}达人内容`,
-      `最近3位本地美食达人在${hotPlatform}发布了本店相关内容，互动量不错，建议主动联系合作推出专属套餐。`,
+      `跟进${hotPlatform}${labels.influencer}内容`,
+      `最近3位本地${labels.influencer}在${hotPlatform}发布了本店相关内容，互动量不错，建议主动联系合作推出专属活动。`,
       'medium',
       shopName
     );
@@ -211,7 +242,7 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     addTodo(
       'campaign',
       `参考竞品调整活动：${competitorAction}`,
-      `竞品正在做"${competitorAction}"，声量上涨明显，建议你也推出限时优惠活动，可参考"第二份半价"或"新客立减"等话术。`,
+      `竞品正在做"${competitorAction}"，声量上涨明显，建议你也推出限时优惠活动，可参考"${labels.campaign}"或"${competitorAction}"等话术。`,
       'high',
       shopName
     );

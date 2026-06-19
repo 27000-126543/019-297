@@ -67,6 +67,10 @@ const TodoPage: React.FC = () => {
     });
   };
 
+  const handleGoHome = () => {
+    Taro.switchTab({ url: '/pages/home/index' });
+  };
+
   const handleGoAdvice = () => {
     Taro.switchTab({ url: '/pages/advice/index' });
   };
@@ -112,7 +116,7 @@ const TodoPage: React.FC = () => {
         <View className={styles.emptyState}>
           <Text className={styles.emptyIcon}>📋</Text>
           <Text className={styles.emptyText}>先去首页设置你的店铺信息吧</Text>
-          <View className={styles.goAdviceBtn} style={{ marginTop: '32rpx' }} onClick={handleGoAdvice}>
+          <View className={styles.goAdviceBtn} style={{ marginTop: '32rpx' }} onClick={handleGoHome}>
             <Text className={styles.goAdviceBtnText}>去设置</Text>
           </View>
         </View>
